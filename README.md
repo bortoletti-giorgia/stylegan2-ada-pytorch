@@ -12,11 +12,11 @@ If you want to run the Stylegan2-ADA-pytorch in your own system, you can set the
 * Visual Studio Code Community 2019 and add to PATH “C:\Program Files (x86)\Microsoft Visual Stu-dio\<VERSION>\Community\VC\Auxiliary\Build\vcvars64.bat”
 
 And create an Anaconda Environment with:
-* conda create -n stylegan-pytorch python==3.7
-* conda activate stylegan-pytorch
-    * pip install click requests tqdm pyspng ninja imageio-ffmpeg==0.4.3
-    * pip install scipy
-    * pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 torchaudio==0.7.2 -f https://download.pytorch.org/whl/torch_stable.html 
+* ```conda create -n stylegan-pytorch python==3.7```
+* ```conda activate stylegan-pytorch```
+    * ```pip install click requests tqdm pyspng ninja imageio-ffmpeg==0.4.3```
+    * ```pip install scipy```
+    * ```pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 torchaudio==0.7.2 -f https://download.pytorch.org/whl/torch_stable.html ```
 
 Open Jupyter Notebook of *stylegan-pytorch* env and run step-by-step the [run-local.ipynb](https://github.com/bortoletti-giorgia/stylegan2-ada-pytorch/tree/main/extra/run-local.ipynb) file.
 
@@ -37,7 +37,7 @@ Requirements:
 Create the container from the Singularity Definition file [singularity-container.def](https://github.com/bortoletti-giorgia/stylegan2-ada-pytorch/tree/main/extra/singularity-container.def) created from https://gpucomputing.shef.ac.uk/education/creating_gpu_singularity/ and https://stackoverflow.com/questions/54678805/containerize-a-conda-environment-in-a-singularity-container.
 
 Open Command Prompt and write:
-    sudo singularity build singularity-container.sif singularity-container.def
+    ```sudo singularity build singularity-container.sif singularity-container.def```
 
 If you want to modify something you can run: singularity shell ubuntu-container.sif 
 The singularity-container.sif container contains:
@@ -46,9 +46,9 @@ The singularity-container.sif container contains:
 * Anaconda 2020
 * An environment Anaconda called stylegan-pytorch with:
     * Python 3.7
-    * pip install click requests tqdm pyspng ninja imageio-ffmpeg==0.4.3
-    * pip install scipy
-    * pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 torchaudio==0.7.2 -f https://download.pytorch.org/whl/torch_stable.html 
+    * ```pip install click requests tqdm pyspng ninja imageio-ffmpeg==0.4.3```
+    * ```pip install scipy```
+    * ```pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 torchaudio==0.7.2 -f https://download.pytorch.org/whl/torch_stable.html ```
 
 ### Run on Cluster DEI
 Requirements:
@@ -78,7 +78,9 @@ At the end you can find in folder:
 * tfrecords-dataset: TensorFlow data resulted from dataset-tool.py invocation and one JSON file with structure of labelled dataset;
 * results: model resulted from train.py
 
+## Labelled dataset
 
+To create the dataset.json file used for conditioning, you can use the file [create-dataset-json.py](https://github.com/bortoletti-giorgia/stylegan2-ada-pytorch/tree/main/extra/create-dataset-json.py) with ```python create-dataset-json.py --source=$source --filename=$filename_json```.
 
 
 
