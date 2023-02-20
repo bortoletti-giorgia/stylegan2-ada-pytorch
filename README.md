@@ -1,3 +1,87 @@
+# How to run StyleGAN2-ADA-pytorch 
+
+Below the explanation of the Official implementation of Stylegan2-ADA-pytorch.
+
+## Run in your own system
+
+If you want to run the Stylegan2-ADA-pytorch in your own system, you can set the environment in this way:
+
+* Windows 11
+* Anaconda 2020
+* CUDA 11.1 ([download-cuda](https://developer.nvidia.com/cuda-11.1.0-download-archive)): save its path in the system environment variables
+* Visual Studio Code Community 2019 and add to PATH “C:\Program Files (x86)\Microsoft Visual Stu-dio\<VERSION>\Community\VC\Auxiliary\Build\vcvars64.bat”
+
+And create an Anaconda Environment with:
+* conda create -n stylegan-pytorch python==3.7
+* conda activate stylegan-pytorch
+    * pip install click requests tqdm pyspng ninja imageio-ffmpeg==0.4.3
+    * pip install scipy
+    * pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 torchaudio==0.7.2 -f https://download.pytorch.org/whl/torch_stable.html 
+
+Open Jupyter Notebook of *stylegan-pytorch* env and run step-by-step the [run-local.ipynb](https://github.com/bortoletti-giorgia/stylegan2-ada-pytorch/tree/main/extra/run-local.ipynb) file.
+
+## Run in Cluster DEI of University of Padua
+
+If you don’t have at least of 12 GB in your GPU and it’s not RTX 3090 or Tesla V100, you can run the code in SLURM CLUSTER DEI ([SLURM-UNIPD](https://clusterdeiguide.readthedocs.io/en/latest/index.html)).
+You need to have:
+* Windows 11
+* An account DEI: ask for it here https://www.dei.unipd.it/helpdesk/index.php
+* At least 20GB in your workspace
+* WinSCP with Putty
+
+### Create Singularity Container
+Requirements:
+* Ubuntu 16.04
+* Singularity
+
+Create the container from the Singularity Definition file [singularity-container.def](https://github.com/bortoletti-giorgia/stylegan2-ada-pytorch/tree/main/extra/singularity-container.def) created from https://gpucomputing.shef.ac.uk/education/creating_gpu_singularity/ and https://stackoverflow.com/questions/54678805/containerize-a-conda-environment-in-a-singularity-container.
+
+Open Command Prompt and write:
+    sudo singularity build singularity-container.sif singularity-container.def
+
+If you want to modify something you can run: singularity shell ubuntu-container.sif 
+The singularity-container.sif container contains:
+* Ubuntu 18.04
+* CUDA 11.1
+* Anaconda 2020
+* An environment Anaconda called stylegan-pytorch with:
+    * Python 3.7
+    * pip install click requests tqdm pyspng ninja imageio-ffmpeg==0.4.3
+    * pip install scipy
+    * pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 torchaudio==0.7.2 -f https://download.pytorch.org/whl/torch_stable.html 
+
+### Run on Cluster DEI
+Requirements:
+* Windows 11
+* WinSCP
+* [main.job](https://github.com/bortoletti-giorgia/stylegan2-ada-pytorch/tree/main/extra/run-remote.job)
+
+Open WinSCP and connect to login.dei.unipd.it in SCP protocol.
+Your workspace structure should be (“bortoletti” is the example workspace):
+
+```
+    \home\bortoletti
+    ├── dataset                     # where to put dataset images
+    ├── ├── dataset.json            # JSON file with dataset organization in labels
+
+    ├── tfrecords-dataset           # output directory for dataset-tool.py from stylegan2-ada-pytorch
+    ├── results                     # results directory for train.py from stylegan2-ada-pytorch
+    ├── stylegan2-ada-pytorch-main  # clone of https://github.com/NVlabs/stylegan2-ada-pytorch/ 
+    │   main.job                    # JOB file for running stylegan2-ada-pytorch
+    │   singularity-container.sif   # Singularity container for executing the job file
+```
+
+
+Open PuTTY and write: sbatch main.job 
+At the end you can find in folder:
+* out: one TXT file with a list of errors and one TXT file with output of the job;
+* tfrecords-dataset: TensorFlow data resulted from dataset-tool.py invocation and one JSON file with structure of labelled dataset;
+* results: model resulted from train.py
+
+
+
+
+
 ## StyleGAN2-ADA &mdash; Official PyTorch implementation
 
 ![Teaser image](./docs/stylegan2-ada-teaser-1024x252.png)
