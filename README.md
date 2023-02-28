@@ -2,6 +2,28 @@
 
 Below the explanation of the Official implementation of Stylegan2-ADA-pytorch.
 
+## Prepare dataset
+
+### Prepare images
+
+Images must be square and with a dimension that is power-of-two. You can use [resize-images.py](https://github.com/bortoletti-giorgia/stylegan2-ada-pytorch/tree/main/extra/resize-images.py) with command ```python resize-images.py --source=$dataset_path --outdir=$resized_images_path --imagesize=256```. 
+
+### Labeled dataset
+
+If you want to train the stylegan2-ada-pytorch with conditioning on one label, your dataset should be divided in folder based on the label and you should create a *dataset.json* with this structure:
+```
+{
+    "labels":
+        [
+            ["folder1/1.jpg", 0], ["folder1/2.jpg", 0], ["folder1/3.jpg", 0], 
+            ["folder2/4.jpg", 1], ["folder2/5.jpg", 1], ["folder2/6.jpg", 1], 
+            ["folder3/7.jpg", 2], ["folder3/8.jpg", 2], ["folder3/9.jpg", 2], 
+        ]
+}
+```
+
+To create the *dataset.json* file, you can use [create-dataset-json.py](https://github.com/bortoletti-giorgia/stylegan2-ada-pytorch/tree/main/extra/create-dataset-json.py) with command ```python create-dataset-json.py --source=$source --filename=$filename_json```.
+
 ## Run in your own system
 
 Requirements:
@@ -22,27 +44,32 @@ Open Jupyter Notebook of *stylegan-pytorch* env and run step-by-step [run-local.
 
 ## Run in Cluster DEI of University of Padua
 
-If you don’t have at least of 12 GB in your GPU and it’s not RTX 3090 or Tesla V100, you can run the code in ([SLURM CLUSTER DEI](https://clusterdeiguide.readthedocs.io/en/latest/index.html)).
+If you don’t have at least of 12 GB in your GPU and it’s not RTX 3090 or Tesla V100, you can run the code in [SLURM CLUSTER DEI](https://clusterdeiguide.readthedocs.io/en/latest/index.html).
 
-Requirements:
+Requirements to access SLURM:
 * Windows 11
 * An account DEI: ask for it here https://www.dei.unipd.it/helpdesk/index.php
 * At least 20 GB in your workspace
 * WinSCP with PuTTY
 
-### Create Singularity Container
-Requirements:
-* Ubuntu 16.04
+Requirements to create the Singularity Container:
+* Ubuntu
 * Singularity
+
+### Create Singularity Container
+
+For running your code in SLURM, you need to create a Singularity Container.
+I created the container in Ubuntu because it requires fewer applications and has fewer conflicts than Windows but Singularity can also be installed on Windows and produces the same results.
 
 Create the container from the Singularity Definition file [singularity-container.def](https://github.com/bortoletti-giorgia/stylegan2-ada-pytorch/tree/main/extra/singularity-container.def) written from https://gpucomputing.shef.ac.uk/education/creating_gpu_singularity/ and https://stackoverflow.com/questions/54678805/containerize-a-conda-environment-in-a-singularity-container.
 
 Open Command Prompt and write: ```sudo singularity build singularity-container.sif singularity-container.def```
 
-If you want to modify something you can run: singularity shell singularity-container.sif 
+If you want to modify something you can run: ```singularity shell singularity-container.sif```.
+
 The singularity-container.sif container contains:
 * Ubuntu 18.04
-* CUDA 11.1
+* CUDA 11.1 with its location saved in the PATH
 * Anaconda 2020
 * An environment Anaconda called *stylegan-pytorch* with:
     * Python 3.7
@@ -51,12 +78,11 @@ The singularity-container.sif container contains:
     * ```pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 torchaudio==0.7.2 -f https://download.pytorch.org/whl/torch_stable.html ```
 
 ### Run on Cluster DEI
-Requirements:
-* Windows 11
-* WinSCP with PuTTY
-* [main.job](https://github.com/bortoletti-giorgia/stylegan2-ada-pytorch/tree/main/extra/run-remote.job)
+
+Login to Windows 11 and download [main.job](https://github.com/bortoletti-giorgia/stylegan2-ada-pytorch/tree/main/extra/run-remote.job). Be careful to rename it as *main.job*.
 
 Open WinSCP and connect to *login.dei.unipd.it* using SCP protocol.
+
 Your workspace structure should be (“bortoletti” is the example workspace):
 
 ```
@@ -72,15 +98,12 @@ Your workspace structure should be (“bortoletti” is the example workspace):
 ```
 
 
-Open PuTTY and write: ```sbatch main.job```
+Open PuTTY and write: ```sbatch main.job```. Now 
 At the end you can find in folder:
-* *out*: one TXT file with a list of errors and one TXT file with output of the job;
-* *tfrecords-dataset*: TensorFlow data resulted from dataset-tool.py invocation and one JSON file with structure of labelled dataset;
-* *results*: model resulted from train.py
+* *out/*: one TXT file with a list of errors and one TXT file with output of the job;
+* *tfrecords-dataset/*: TensorFlow data resulted from dataset-tool.py invocation and one JSON file with structure of labelled dataset;
+* *results/*: model resulted from train.py
 
-## Labeled dataset
-
-To create the dataset.json file used for conditioning, you can use [create-dataset-json.py](https://github.com/bortoletti-giorgia/stylegan2-ada-pytorch/tree/main/extra/create-dataset-json.py) with command ```python create-dataset-json.py --source=$source --filename=$filename_json```.
 
 
 # Unchanged:
