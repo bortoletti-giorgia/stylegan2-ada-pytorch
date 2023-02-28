@@ -6,7 +6,8 @@ Below the explanation of the Official implementation of Stylegan2-ADA-pytorch.
 
 ### Prepare images
 
-Images must be square and with a dimension that is power-of-two. You can use [resize-images.py](https://github.com/bortoletti-giorgia/stylegan2-ada-pytorch/tree/main/extra/resize-images.py) with command ```python resize-images.py --source=$dataset_path --outdir=$resized_images_path --imagesize=256```. 
+Images must be square and with a dimension that is power-of-two. You can use [resize-images.py](https://github.com/bortoletti-giorgia/stylegan2-ada-pytorch/tree/main/extra/resize-images.py) with command ```python resize-images.py --source=$dataset_path --outdir=$resized_images_path --imagesize=256```.
+This code preserves the original image name in the resized image. So that if you create the dataset.json file it will be consistent even after running *resize-images.py*.
 
 ### Labeled dataset
 
@@ -93,6 +94,7 @@ Your workspace structure should be (“bortoletti” is the example workspace):
     ├── tfrecords-dataset           # output directory for dataset-tool.py from stylegan2-ada-pytorch
     ├── results                     # results directory for train.py from stylegan2-ada-pytorch
     ├── stylegan2-ada-pytorch-main  # clone of https://github.com/NVlabs/stylegan2-ada-pytorch/ 
+    ├── out                         # folder with TXT file with errors and shell output of main.job 
     │   main.job                    # JOB file for running stylegan2-ada-pytorch
     │   singularity-container.sif   # Singularity container for executing the job file
 ```
